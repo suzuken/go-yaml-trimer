@@ -47,14 +47,16 @@ func (t *Trimer) write(filename string) error {
 }
 
 func (t *Trimer) trimIter(items yaml.MapSlice) yaml.MapSlice {
-	newItems := items
+	var deleted int
 	for i, kv := range items {
 		key, ok := kv.Key.(string)
 		if !ok {
 			continue
 		}
 		if t.g.Match(key) {
-			newItems = append(newItems[:i], newItems[i+1:]...)
+			j := i - deleted
+			items = items[:j+copy(items[j:], items[j+1:])]
+			deleted++
 			continue
 		}
 
@@ -65,9 +67,9 @@ func (t *Trimer) trimIter(items yaml.MapSlice) yaml.MapSlice {
 		if len(arr) == 0 {
 			continue
 		}
-		newItems[i].Value = t.trimIter(arr)
+		items[i].Value = t.trimIter(arr)
 	}
-	return newItems
+	return items
 }
 
 func (t *Trimer) Trim() {
