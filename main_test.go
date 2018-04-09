@@ -28,7 +28,7 @@ func TestSaveOrder(t *testing.T) {
 	}
 
 	var out bytes.Buffer
-	err = trimer.write(&out)
+	err = trimer.Write(&out)
 	if err != nil {
 		t.Fatalf("failed: %s", err)
 	}
@@ -67,7 +67,7 @@ func TestTrim(t *testing.T) {
 	}
 
 	var out bytes.Buffer
-	err = trimer.write(&out)
+	err = trimer.Write(&out)
 	if err != nil {
 		t.Fatalf("failed: %s", err)
 	}

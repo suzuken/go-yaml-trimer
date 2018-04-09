@@ -29,7 +29,7 @@ func (t *Trimer) Open(filename string) error {
 	return t.open(file)
 }
 
-func (t *Trimer) write(w io.Writer) error {
+func (t *Trimer) Write(w io.Writer) error {
 	t.Trim()
 
 	enc := yaml.NewEncoder(w)
@@ -37,13 +37,13 @@ func (t *Trimer) write(w io.Writer) error {
 	return enc.Encode(t.data)
 }
 
-func (t *Trimer) Write(filename string) error {
+func (t *Trimer) write(filename string) error {
 	outfile, err := os.Create(filename)
 	if err != nil {
 		return err
 	}
 	defer outfile.Close()
-	return t.write(outfile)
+	return t.Write(outfile)
 }
 
 func (t *Trimer) trimIter(items yaml.MapSlice) yaml.MapSlice {
@@ -105,7 +105,7 @@ func iferr(err error, msg string) {
 
 func main() {
 	var (
-		output  = flag.String("output", "output.yaml", "file name to output")
+		output  = flag.String("output", "", "file name to output. if empty, output to STDOUT")
 		pattern = flag.String("pattern", "x-will-*", "glob pattern of YAML property name to remove")
 	)
 	flag.Parse()
@@ -122,7 +122,9 @@ func main() {
 
 	t := &Trimer{g, nil}
 	iferr(t.Open(filename), "open YAML file failed")
-	iferr(t.Write(*output), "write YAML file failed")
-
-	fmt.Print("finish")
+	if *output == "" {
+		iferr(t.Write(os.Stdout), "write YAML file failed")
+	} else {
+		iferr(t.write(*output), "write YAML file failed")
+	}
 }
