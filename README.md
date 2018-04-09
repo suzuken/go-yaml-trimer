@@ -15,7 +15,7 @@ T:
     x-will-be-removed: false
 ```
 
-After running `yaml-trimer -pattern x-will-* -output output.yaml input.yaml`
+After running `yaml-trimer -pattern "x-will-*" -output output.yaml input.yaml`
 
 ```yaml
 # output.yaml
